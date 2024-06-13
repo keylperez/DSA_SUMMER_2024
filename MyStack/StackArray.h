@@ -3,6 +3,8 @@
 
 #include<stdbool.h>
 
+#define MAX 10
+
 typedef struct{
 	int data[MAX];
 	int top;

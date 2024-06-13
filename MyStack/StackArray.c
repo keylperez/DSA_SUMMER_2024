@@ -1,35 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdboo.h>
+#include <stdbool.h>
 #include "StackArray.h"
 
 void initStack(StackArrayList *s){
-	*s->top = -1;
+	s->top = -1;
 }
 
 StackArrayList createStack(){
-	StackArrayList s;
-	initStack(&s);
-	return s;
 }
 
 bool isEmpty(StackArrayList s){
-	return s.top == -1 ? true : false;
+	return s.top == -1;
 }
 bool isFull(StackArrayList s){	
-	return s.top >== (sizeof(s.data/4) - 1) ? true : false;
+	return s.top >= MAX;
 }
 
 bool stack_push(StackArrayList *s, int elem){
 	
 	bool pushMsg = false;
 	
-	bool stackFull = isFull(s);
+	bool stackFull = isFull(*s);
 	
-	if(stackFull == false)){
+	if(!stackFull){
 		
-		*s->data[s.top] = elem;
-		*s->top++;
+		s->data[++s->top] = elem;
+//		(s->top)++;
 		pushMsg = true;
 	}
 	
@@ -40,12 +37,13 @@ bool stack_pop(StackArrayList *s){
 	
 	bool popMsg = false;
 	
-	bool stackEmpty = isEmpty(s);
+	bool stackEmpty = isEmpty(*s);
 	
-	if(stackEmpty == false){
+	if(!stackEmpty){
 		
-		*s->data[s.top] = NULL;
-		*s->top--;
+//		int top = s->top;
+		s->data[--s->top] = -1;
+//		(s->top)--;
 		popMsg = true;
 	}	
 	
@@ -56,11 +54,15 @@ int stack_peek(StackArrayList s){
 	return s.data[s.top];
 }
 
-void display(StackArrayList s){
-		
+void stack_display(StackArrayList s){
+	StackArrayList tempStack = createStack();
+	
 }
 
-void visualize(StackArrayList s);
+void stack_visualize(StackArrayList s){
+
+	printf("Element\tIndex\tTop");
+}
 
 //others
-StackArrayList evenFromStack(StackArrayList s);
+//StackArrayList evenFromStack(StackArrayList s);
