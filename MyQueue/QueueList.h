@@ -3,28 +3,29 @@
 
 #include<stdbool.h>
 
-#define MAX 10
+typedef struct node{
+	int data;
+	struct node* next;
+} Node, *NodePtr;
 
-typedef struct{
-	int data[MAX];
-	int top;
-} QueueList;
+typedef struct {
+	NodePtr front;
+	NodePtr rear;
+} Queue; 
 
-void initQueue(QueueList *s);
-//QueueList createQueue();
+void initQueue(Queue *q);
+//Queue createQueue();
 
-bool isEmpty(QueueList s);
-bool isFull(QueueList s);
+bool isEmpty(Queue q);
 
-bool enqueue(QueueList *s, int elem);
-bool dequeue(QueueList *s);
-int peek_front(QueueList s);
-int peek_rear(QueueList s);
+bool enqueue(Queue *q, int elem);
+bool dequeue(Queue *q);
+int peek_front(Queue q);
+int peek_rear(Queue q);
 
-void display(QueueList s);
-void visualize(QueueList s);
+void display(Queue q);
 
 //others
-QueueList evenFromQueue(QueueList s);
+Queue evenFromQueue(Queue s);
 
 #endif
