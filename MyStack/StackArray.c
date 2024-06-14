@@ -7,14 +7,15 @@ void initStack(StackArrayList *s){
 	s->top = -1;
 }
 
-StackArrayList createStack(){
-}
+//StackArrayList createStack(){
+	
+//}
 
 bool isEmpty(StackArrayList s){
 	return s.top == -1;
 }
 bool isFull(StackArrayList s){	
-	return s.top >= MAX;
+	return s.top >= (MAX - 1);
 }
 
 bool stack_push(StackArrayList *s, int elem){
@@ -27,6 +28,7 @@ bool stack_push(StackArrayList *s, int elem){
 		
 		s->data[++s->top] = elem;
 //		(s->top)++;
+		printf("\nStruct.top now: %d", s->top);
 		pushMsg = true;
 	}
 	
@@ -43,7 +45,7 @@ bool stack_pop(StackArrayList *s){
 		
 //		int top = s->top;
 		s->data[--s->top] = -1;
-//		(s->top)--;
+		printf("\nStruct.top now: %d", s->top);
 		popMsg = true;
 	}	
 	
@@ -55,7 +57,12 @@ int stack_peek(StackArrayList s){
 }
 
 void stack_display(StackArrayList s){
-	StackArrayList tempStack = createStack();
+	StackArrayList tempStack;
+	initStack(&tempStack);
+	
+	int pushTemp = stack_peek(s);
+	
+	printf("%d", pushTemp);
 	
 }
 

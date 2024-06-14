@@ -11,7 +11,7 @@ typedef struct{
 } StackArrayList;
 
 void initStack(StackArrayList *s);
-StackArrayList createStack();
+//StackArrayList createStack();
 
 bool isEmpty(StackArrayList s);
 bool isFull(StackArrayList s);
