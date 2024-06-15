@@ -7,32 +7,60 @@
 int main() {
 	
 	StackArrayList myStack;
-	initStack(&myStack);
+//	initStack(&myStack);
+	myStack = createStack();
 	
-	stack_push(&myStack, 1);
-	stack_push(&myStack, 2);
-	stack_push(&myStack, 3);
-	stack_push(&myStack, 4);
-	stack_push(&myStack, 5);
-	stack_push(&myStack, 6);
-	stack_push(&myStack, 7);
-	stack_push(&myStack, 8);
-	stack_push(&myStack, 9);
-	stack_push(&myStack, 10);
+	if(isEmpty(myStack)) printf("\nSTACK EMPTY!!\n");
 	
-	isFull(myStack) ? printf("\nStack is Full") : printf("\nStack not Full");
+	int elements[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	int trav;
+	for(trav = 0; trav < MAX && !isFull(myStack); trav++ ){
 	
-	int stackPeek;
+		if(stack_push(&myStack, elements[trav])) printf("\nPush Success");
+	}
 	
-	stackPeek = stack_peek(myStack);
-	printf("\nPeek of Stack: %d", stackPeek);
+	if(stack_push(&myStack, 11)) printf("\nPush Success");
 	
-	stack_pop(&myStack);
+	if(isFull(myStack)) printf("\nSTACK IS FULL!!\n");
 	
-	isFull(myStack) ? printf("\nStack is Full") : printf("\nStack not Full");
+	printf("\n========================================\n");
+	printf("\nORIGINAL STACK:\n");
+	printf("\nElements: ");
+	stack_display(myStack);
+	stack_visualize(myStack);
+	printf("\n========================================\n");
+
+	if(stack_pop(&myStack)) printf("\nPop Success\n");
 	
-	stackPeek = stack_peek(myStack);
-	printf("\nPeek of Stack: %d", stackPeek);
+	if(isFull(myStack)) printf("\nSTACK IS FULL!!\n");
+	
+	printf("\n========================================\n");
+	printf("\nSTACK AFTER POP:\n");
+	printf("\nElements: ");
+	stack_display(myStack);
+	stack_visualize(myStack);
+	printf("\n========================================\n");
+	
+	StackArrayList evenStack = evenFromStack(myStack);
+	if(!isEmpty(evenStack)){
+		
+		printf("\n========================================\n");
+		printf("\nEVEN STACK:\n");
+		printf("\nElements: ");
+		stack_display(evenStack);
+		stack_visualize(evenStack);
+		printf("\n========================================\n");
+		
+	} else {
+		printf("\nEMPTY EVEN STACK!!");
+	}
+	
+	printf("\n========================================\n");
+	printf("\nORIGINAL STACK:\n");
+	printf("\nElements: ");
+	stack_display(myStack);
+	stack_visualize(myStack);
+	printf("\n========================================\n");
 	
 	return 0;
 }
