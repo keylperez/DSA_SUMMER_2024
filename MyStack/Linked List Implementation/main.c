@@ -15,7 +15,7 @@ int main() {
 	int elements[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int trav;
 	
-    for(trav = 0; trav < sizeof(elements)/4; trav++){
+    for(trav = 0; trav < sizeof(elements)/sizeof(elements[0]); trav++){
     
         if(stack_push(&myStack, elements[trav])) printf("\nPush Success");
     }
@@ -38,9 +38,10 @@ int main() {
 	printf("\nElements: ");
 	stack_display(myStack);
 	stack_visualize(myStack);
-	printf("\n========================================\n");
+	printf("\n========================================\n");	
 	
 	Stack evenStack = evenFromStack(myStack);
+	
 
 	printf("\n========================================\n");
 	printf("\nEVEN STACK:\n");
@@ -55,6 +56,6 @@ int main() {
 	stack_display(myStack);
 	stack_visualize(myStack);
 	printf("\n========================================\n");
-	
+		
 	return 0;
 }

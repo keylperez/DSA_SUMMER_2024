@@ -142,14 +142,15 @@ Stack evenFromStack(Stack s){
 //				
 //			} 
 //		}
-		while(!isEmpty(s)){
+	while(!isEmpty(s)){
 
-			if(stack_peek(s)%2 == 0) {
-				printf("%d ", stack_peek(s));
-				if(!stack_push(&evenStack, stack_peek(s))) printf("\nError pushing to even stack\n");	;
-			}
-			if(!stack_pop(&s)) printf("\nError popping\n");
+		if(stack_peek(s)%2 == 0) {
+			if(!stack_push(&evenStack, stack_peek(s))) printf("\nError pushing to even stack\n");
+			
 		}
+		if(!stack_pop(&s)) printf("\nError popping\n");
+		printf("%d ", stack_peek(s));
+	}
 
 	} else {
 		printf("\nEMPTY STACK!!");
