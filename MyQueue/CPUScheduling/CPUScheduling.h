@@ -1,21 +1,44 @@
 #ifndef CPU_SCHEDULING
 #define CPU_SCHEDULING
 
-typedef struct processNode{
-	
+typedef struct{
+	char processName;
 	int burstTime;
 	int arrivalTime;
 	int completionTime;
-	int executionTime;
 	int turnAroundTime;
 	int waitingTime;
-	struct processNode* next;
-} Process, ProcessPtr;
+} ProcessNode;
+
+typedef struct node{
+	ProcessNode elem;
+	struct node *next;
+} Node, *NodePtr;
 
 typedef struct {
-	ProcessPtr
-};
+	NodePtr front;
+	NodePtr rear;
+} CPU;
 
-FirstComeFirstServe();
+void initalizeQueue(CPU *queue);
+CPU createQueue();
+
+bool isEmpty(CPU queue);
+
+NodePtr processFront(CPU queue);
+NodePtr processRear(CPU queue);
+
+ProcessNode fillProcess(char name, int bt, int at);
+
+bool enqueueProcess(CPU *queue, ProcessNode p);
+bool dequeueProcess(CPU *queue);
+
+//void computeProcesses(CPU *queue);
+//int computeCT(CPU *queue);
+int computeTAT(ProcessNode node);
+int computeWT(ProcessNode node);
+
+void displayProcesses(CPU queue);
+void visualizeProcesses(CPU queue);
 
 #endif
