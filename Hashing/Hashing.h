@@ -5,7 +5,7 @@
 #define THRESHOLD 0.65
 #define HASHCODE 31
 
-/********************
+/*****************************
 ["red"]				= "FF0000"
 ["orange"]			= "FF8000"
 ["yellow"]			= "FFFF00"
@@ -18,10 +18,13 @@
 ["purple"]			= "8000FF"
 ["magenta"]			= "FF00FF"
 ["neon rose"]		= "FF0080"
-********************/
+*****************************/
+
+extern bool DEBUG_SWITCH;
 
 typedef struct node{
-    char hexCode[6];
+    char value[7];
+    char key[20];
     bool occupied;
     struct node *next;
 } SetNode, *SetNodePtr;
@@ -38,14 +41,14 @@ typedef struct{
 HashTable createHash(int size);
 
 bool isOccupied(HashTable hash, int index);
-bool populateTableLinear(HashTable *hash, char key[], char value[]);
+bool insertHash(HashTable *hash, char key[], char value[]);
+void searchHash(HashTable hash, char key[]);
+SetNode deleteHash(HashTable hash, char key[]);
 
 bool threshCheck(HashTable hash);
-SetNode collisionHandle(SetNode *trav);
 
 int hashFunction(char string[]);
-SetNode searchTable(HashTable hash, char key[]);
 
-void displayValue(HashTable hash, char key[]);
+void visualizeValue(HashTable hash);
 
 #endif
