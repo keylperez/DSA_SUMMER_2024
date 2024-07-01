@@ -17,11 +17,7 @@ int main() {
 //	insertHash(&myHash, "neon rose", "FF0080") ? searchHash(myHash, "neon rose") : printf("\nError populating list");
 //	insertHash(&myHash, "red", "FF0000") ? searchHash(myHash, "red") : printf("\nError populating list");
 	
-	visualizeTable(myHash);
-	
 	populateTable(&myHash);
-	
-	
 	
 	visualizeTable(myHash);
 	return 0;
