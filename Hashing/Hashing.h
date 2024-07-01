@@ -11,7 +11,7 @@
 ["yellow"]			= "FFFF00"
 ["yellow green"]	= "80FF00"
 ["green"]			= "00FF00"
-["sping green"]		= "800080"
+["spring green"]	= "800080"
 ["cyan"]			= "00FFFF"
 ["skyblue"]			= "0080FF"
 ["blue"]			= "0000FF"
@@ -20,16 +20,15 @@
 ["neon rose"]		= "FF0080"
 *****************************/
 
-extern bool DEBUG_SWITCH;
+extern char colors[8][2][20];
 
 typedef struct node{
     char value[7];
     char key[20];
-    bool occupied;
     struct node *next;
 } SetNode, *SetNodePtr;
 
-typedef SetNode HashArray[SIZE];
+typedef SetNodePtr HashArray[SIZE];
 
 typedef struct{
     HashArray Set;
@@ -39,11 +38,11 @@ typedef struct{
 } HashTable;
 
 HashTable createHash(int size);
+bool populateTable(HashTable *hash);
 
-bool isOccupied(HashTable hash, int index);
 bool insertHash(HashTable *hash, char key[], char value[]);
 void searchHash(HashTable hash, char key[]);
-SetNode deleteHash(HashTable hash, char key[]);
+SetNode deleteHash(HashTable *hash, char key[]);
 
 bool threshCheck(HashTable hash);
 

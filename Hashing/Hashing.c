@@ -4,7 +4,17 @@
 #include <string.h>
 #include "Hashing.h"
 
-bool DEBUG_SWITCH = true;
+
+char colors[8][2][20] = {
+	{"yellow", "FFFF00"},
+	{"cyan", "00FFFF"},
+	{"neon rose", "FF0080"},
+	{"red", "FF0000"},
+	{"orange", "FF8000"},
+	{"yellow green", "80FF00"},
+	{"green", "00FF00"},
+	{"spring green", "800080"}
+};
 
 HashTable createHash(int size){
 	
@@ -15,51 +25,53 @@ HashTable createHash(int size){
 	
 	int i;
 	for(i = 0; i < size; i++){
-		newHash.Set[i].occupied = false;
-		newHash.Set[i].next = NULL;
+		newHash.Set[i] = NULL;
 	}
 	
 	return newHash;
 }
 
-bool isOccupied(HashTable hash, int index){
+bool populateTable(HashTable *hash){
 	
-	return hash.Set[index].occupied;
+	int x;
 	
+	for(x = 0; x < 8; x++){
+		
+		insertHash(hash, colors[x][0], colors[x][1]) ? searchHash(*hash, colors[x][0]): printf("Error inserting Hash");
+	}
+	
+	return true;
 }
 
+
 bool insertHash(HashTable *hash, char key[], char value[]){
-	
+
 	bool retVal = false;
 	
 	int keyIndex = hashFunction(key)%hash->size;
-//	SetNode newNode, *trav;
 	SetNodePtr newNode = (SetNodePtr) malloc(sizeof(SetNode));
 	
 	if(newNode != NULL){
 		
-		SetNodePtr trav = &(hash->Set[keyIndex]);
+		SetNodePtr trav = hash->Set[keyIndex];
 		
-		if(DEBUG_SWITCH){
-		
-			printf("\n\nDebug Info:");
-			printf("\nIndex: %d", keyIndex);
-		}
-		printf("\nKey: %s", strcpy(newNode->key, key));
-		printf("\nValue: %s", strcpy(newNode->value, value));
-		newNode->occupied = true;
+		strcpy(newNode->key, key);
+		strcpy(newNode->value, value);
 		newNode->next = NULL;
 	
-		if(isOccupied(*hash, keyIndex)) {
+		if(trav != NULL) {
 			
 			while(trav->next != NULL){
 				trav = trav->next;
 			}
 			trav->next = newNode;
+			trav = trav->next;
+			
+			
 		} else {
 			
-			hash->Set[keyIndex] = *newNode;
-		}		
+			hash->Set[keyIndex] = newNode;
+		}
 		
 		hash->count++;
 		hash->threshold = (float)hash->count/(float)hash->size;
@@ -67,17 +79,11 @@ bool insertHash(HashTable *hash, char key[], char value[]){
 	} else {
 		printf("\nError allocating memory");
 	}
-	
-	if(DEBUG_SWITCH) {
-
-		printf("\nSUCCESS FUNCTION\n");
-		printf("---------------------------");
-	}
 	return retVal;
 }
 
 bool threshCheck(HashTable hash){
-	return hash.threshold >= THRESHOLD;
+	return hash.threshold < THRESHOLD;
 }
 
 int hashFunction(char key[]){
@@ -94,14 +100,15 @@ void searchHash(HashTable hash, char key[]){
 	printf("\n\nDISPLAY:");
 	int keyIndex = hashFunction(key) % hash.size;
 	
-	SetNodePtr trav = &(hash.Set[keyIndex]);
+	SetNodePtr trav = hash.Set[keyIndex];
 	
-	while(strcmp((*trav).key, key) != 0 && trav != NULL){
-		trav = trav->next;
+	if(trav != NULL){
+		while(strcmp(trav->key, key) != 0 && trav != NULL){
+			trav = trav->next;
+		}
 	}
-	
-	printf("\nHash Index: %d \nHash Value: %s", keyIndex, (*trav).value);
-//	return trav->value;
+	if(trav != NULL) printf("\nHash Index: %d \nHash Value: %s", keyIndex, trav->value);
+//	return trav;
 }
 
 void visualizeTable(HashTable hash){
@@ -110,32 +117,30 @@ void visualizeTable(HashTable hash){
 	
 	SetNodePtr travPtr;
 	
-	printf("\n\n%7s", "Index");
+	printf("\n\n%-9s%-10s", "Index", "Nodes...");
 	
 	for(travIndex = 0; travIndex < hash.size; travIndex++){
 		
-		while(isOccupied(hash, travIndex) && hash.Set[travIndex].next != NULL){
+		travPtr = hash.Set[travIndex];
+		
+		if(travPtr != NULL){
 			
-			travPtr = &(hash.Set[travIndex]);
-			
-			if(DEBUG_SWITCH) printf("\n\ntravPtr key: %s\n\n", (*travPtr).key);
-			
-			printf("\n%7d", travIndex);
+			printf("\n\n%-5d -> ", travIndex);
 			
 			while(travPtr != NULL){
 				
-				printf("%10s -> ", (*travPtr).key);
+				printf("%-10s -> ", travPtr->key);
 				travPtr = travPtr->next;
 			}
 			
-			travPtr = &(hash.Set[travIndex]);
-			printf("\n%7s%10s -> ", " ", (*travPtr).value);
+			travPtr = hash.Set[travIndex];
+			printf("\n%-5s -> ", " ");
 			
 			while(travPtr != NULL){
 			
-				printf("%10s -> ", (*travPtr).value);
+				printf("%-10s -> ", travPtr->value);
 				travPtr = travPtr->next;
-			}
+			}	
 		}
 	}
 }
