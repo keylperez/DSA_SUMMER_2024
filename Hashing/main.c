@@ -19,7 +19,16 @@ int main() {
 	
 	populateTable(&myHash);
 	
+	
 	visualizeTable(myHash);
+	
+	SetNode deletedHash = deleteHash(&myHash, "red");
+	
+	printf("\nDELETED NODE\nKey: %s\nValue: %s\n", deletedHash.key, deletedHash.value);
+	
+	visualizeTable(myHash);
+	
+	
 	return 0;
 	
 	

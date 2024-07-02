@@ -5,7 +5,7 @@
 #include "Hashing.h"
 
 
-char colors[8][2][20] = {
+char colors[ROW][2][20] = {
 	{"yellow", "FFFF00"},
 	{"cyan", "00FFFF"},
 	{"neon rose", "FF0080"},
@@ -13,7 +13,11 @@ char colors[8][2][20] = {
 	{"orange", "FF8000"},
 	{"yellow green", "80FF00"},
 	{"green", "00FF00"},
-	{"spring green", "800080"}
+	{"spring green", "800080"},
+	{"skyblue", "0080FF"},
+	{"blue", "0000FF"},
+	{"purple", "8000FF"},
+	{"magenta", "FF00FF"}
 };
 
 HashTable createHash(int size){
@@ -35,9 +39,16 @@ bool populateTable(HashTable *hash){
 	
 	int x;
 	
-	for(x = 0; x < 8; x++){
-		
-		insertHash(hash, colors[x][0], colors[x][1]) ? searchHash(*hash, colors[x][0]): printf("Error inserting Hash");
+	for(x = 0; x < ROW; x++){
+					
+		if(insertHash(hash, colors[x][0], colors[x][1])) {
+			
+			SetNode retNode = searchHash(*hash, colors[x][0]);
+			printf("\nKey: %s\nValue: %s\n", retNode.key, retNode.value);  
+		} 
+		else {
+			printf("Error inserting Hash");
+		}
 	}
 	
 	return true;
@@ -58,6 +69,7 @@ bool insertHash(HashTable *hash, char key[], char value[]){
 		strcpy(newNode->key, key);
 		strcpy(newNode->value, value);
 		newNode->next = NULL;
+		newNode->prev = NULL;
 	
 		if(trav != NULL) {
 			
@@ -65,11 +77,11 @@ bool insertHash(HashTable *hash, char key[], char value[]){
 				trav = trav->next;
 			}
 			trav->next = newNode;
+			newNode->prev = trav;
 			trav = trav->next;
 			
 			
 		} else {
-			
 			hash->Set[keyIndex] = newNode;
 		}
 		
@@ -94,10 +106,8 @@ int hashFunction(char key[]){
 	return keyIndex;
 }
 
-void searchHash(HashTable hash, char key[]){
+SetNode searchHash(HashTable hash, char key[]){
 	
-	
-	printf("\n\nDISPLAY:");
 	int keyIndex = hashFunction(key) % hash.size;
 	
 	SetNodePtr trav = hash.Set[keyIndex];
@@ -107,8 +117,35 @@ void searchHash(HashTable hash, char key[]){
 			trav = trav->next;
 		}
 	}
-	if(trav != NULL) printf("\nHash Index: %d \nHash Value: %s", keyIndex, trav->value);
-//	return trav;
+
+	return *trav;
+}
+
+SetNode deleteHash(HashTable *hash, char key[]){
+	
+	int keyIndex = hashFunction(key) % hash->size;
+	
+	SetNodePtr trav = hash->Set[keyIndex];
+	
+	
+	if(trav != NULL){
+		
+		if(trav->next != NULL){
+			
+			while(strcmp(trav->key, key) != 0 && trav != NULL){
+				trav = trav->next;
+			}
+			
+			trav->prev->next = trav->next;
+			trav->next->prev = trav->prev;
+		} else {
+			hash->Set[keyIndex] = NULL;
+		}
+		
+	}
+	
+	return *trav;
+	
 }
 
 void visualizeTable(HashTable hash){
@@ -134,11 +171,11 @@ void visualizeTable(HashTable hash){
 			}
 			
 			travPtr = hash.Set[travIndex];
-			printf("\n%-5s -> ", " ");
+			printf("\n%-5s <- ", " ");
 			
 			while(travPtr != NULL){
 			
-				printf("%-10s -> ", travPtr->value);
+				printf("%-10s <- ", travPtr->value);
 				travPtr = travPtr->next;
 			}	
 		}

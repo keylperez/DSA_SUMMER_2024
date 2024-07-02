@@ -4,6 +4,7 @@
 #define SIZE 10
 #define THRESHOLD 0.65
 #define HASHCODE 31
+#define ROW 12
 
 /*****************************
 ["red"]				= "FF0000"
@@ -20,12 +21,13 @@
 ["neon rose"]		= "FF0080"
 *****************************/
 
-extern char colors[8][2][20];
+extern char colors[ROW][2][20];
 
 typedef struct node{
     char value[7];
     char key[20];
     struct node *next;
+    struct node *prev;
 } SetNode, *SetNodePtr;
 
 typedef SetNodePtr HashArray[SIZE];
@@ -41,7 +43,7 @@ HashTable createHash(int size);
 bool populateTable(HashTable *hash);
 
 bool insertHash(HashTable *hash, char key[], char value[]);
-void searchHash(HashTable hash, char key[]);
+SetNode searchHash(HashTable hash, char key[]);
 SetNode deleteHash(HashTable *hash, char key[]);
 
 bool threshCheck(HashTable hash);
