@@ -26,29 +26,31 @@ extern char colors[ROW][2][20];
 typedef struct node{
     char value[7];
     char key[20];
+    bool occupied;
     struct node *next;
     struct node *prev;
 } SetNode, *SetNodePtr;
 
-typedef SetNodePtr HashArray[SIZE];
-
+//typedef SetNodePtr HashArray[SIZE];
+// incorrect naming after correcting structure concept; too lazy to change hehe
 typedef struct{
-    HashArray Set;
+	SetNodePtr *Set;
     float threshold;
     int size;
     int count;
 } HashTable;
 
+SetNodePtr *newTable(int size);
 HashTable createHash(int size);
-bool populateTable(HashTable *hash);
+void populateTable(HashTable *hash);
 
-bool insertHash(HashTable *hash, char key[], char value[]);
-SetNode searchHash(HashTable hash, char key[]);
-SetNode deleteHash(HashTable *hash, char key[]);
+bool insertHash(SetNodePtr *table, char key[], char value[], int size);
+SetNodePtr searchHash(HashTable hash, char key[]);
+SetNodePtr deleteHash(HashTable *hash, char key[]);
 
 bool threshCheck(HashTable hash);
 
-int hashFunction(char string[]);
+int hashFunction(char key[]);
 
 void visualizeValue(HashTable hash);
 

@@ -7,24 +7,23 @@
 
 int main() {
 	
-	int size = 0;
-	size += SIZE;
-	HashTable myHash = createHash(size);
+	HashTable myHash = createHash(SIZE);
 	
 	
-//	insertHash(&myHash, "yellow", "FFFF00") ? searchHash(myHash, "yellow") : printf("\nError populating list");
+	insertHash(myHash.Set, "yellow", "FFFF00", myHash.size) ? searchHash(myHash, "yellow") : printf("\nError populating list");
 //	insertHash(&myHash, "cyan", "00FFFF") ? searchHash(myHash, "cyan") : printf("\nError populating list");
 //	insertHash(&myHash, "neon rose", "FF0080") ? searchHash(myHash, "neon rose") : printf("\nError populating list");
 //	insertHash(&myHash, "red", "FF0000") ? searchHash(myHash, "red") : printf("\nError populating list");
-	
+//	printf("%d", myHash.size);
 	populateTable(&myHash);
-	
 	
 	visualizeTable(myHash);
 	
-	SetNode deletedHash = deleteHash(&myHash, "red");
+	SetNodePtr deletedHash = deleteHash(&myHash, "skyblue");
 	
-	printf("\nDELETED NODE\nKey: %s\nValue: %s\n", deletedHash.key, deletedHash.value);
+	printf("\nDELETED NODE\nKey: %s\nValue: %s\n", deletedHash->key, deletedHash->value);
+	
+	free(deletedHash);
 	
 	visualizeTable(myHash);
 	
