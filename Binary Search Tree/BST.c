@@ -41,6 +41,7 @@ bool insertNode(NodePtr *head, Product p){
 		newNode->item = p;
 		newNode->right = NULL;
 		newNode->left = NULL;
+		newNode->next = NULL;
 		
 		if(*head == NULL){
 			*head = newNode;
@@ -119,7 +120,85 @@ NodePtr deleteNode(NodePtr *head, char prodName[]){
 	
 }
 
-void BSF(NodePtr head);
+void BSF(NodePtr head){
+	Queue q = createQueue();
+	
+	if(!enQueue(&q, head)) printf("\nError enqueuing head");
+	
+	NodePtr trav;
+	for(trav = q.front; trav != NULL; trav = trav->next){
+		printf("%s ", trav->item.prodName);
+		if(trav->left != NULL){	
+			if(!enQueue(&q, trav->left)) printf("\nError enqueuing to queue");
+		}
+		if(trav->right != NULL){	
+			if(!enQueue(&q, trav->right)) printf("\nError enqueuing to queue");
+		}
+	}
+}
+
+Queue createQueue(){
+	Queue q;
+	q.front = q.rear = NULL;
+	return q;
+}
+
+NodePtr peekFrontQueue(Queue q){
+	return q.front;
+}
+
+NodePtr peekRearQueue(Queue q){
+	return q.rear;
+}
+
+bool enQueue(Queue *q, NodePtr node){
+	
+	bool retVal = false;
+	
+	NodePtr temp = (NodePtr) malloc(sizeof(NodeType));
+	
+	if(temp != NULL){
+		temp = node;
+		
+//		temp->next = NULL;
+		if(isEmpty(*q)){
+			q->front = q->rear = temp;
+		} else {
+			q->rear->next = temp;
+			q->rear = temp;
+		}
+		retVal = true;
+	} else {
+		printf("\nError enqueueing");
+	}
+	
+	return retVal;
+}
+
+bool deQueue(Queue *q){
+	
+	bool dequeueMsg = false;
+	
+	if(!isEmpty(*q)){
+		
+		NodePtr newNode, temp;
+		
+		newNode = temp =  q->front;
+		q->front = newNode->next;
+		
+		free(temp);
+		
+		dequeueMsg = true;
+	} else {
+		printf("\nEmpty Queue!\n");
+	}
+	
+	return dequeueMsg;
+}
+
+bool isEmpty(Queue q){
+	return q.front == NULL && q.rear == NULL;
+}
 
 void inOrderDFS(NodePtr head){
 

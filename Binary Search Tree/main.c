@@ -90,7 +90,7 @@ int main() {
 				break;
 			case 4:
 				
-				printf("\nInput order of display(1-Inorder/2-PostOrder/3-PreORder): ");
+				printf("\nInput order of display(1-Inorder/2-PostOrder/3-PreOrder/4-BSF): ");
 				scanf("%d", &display);
 				switch(display){
 					case 1:
@@ -105,13 +105,17 @@ int main() {
 						printf("\nPre Order: ");
 						preOrderDFS(head);
 						break;
+					case 4:
+						printf("\nBSF Display: ");
+						BSF(head);
+						break;
 				}
 				break;
 		}
 	} while(input != 0);
 	
 	
-	
+	free(head);
 	
 	return 0;
 }

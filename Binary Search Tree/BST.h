@@ -16,8 +16,14 @@ typedef struct{
 
 typedef struct node{
 	Product item;
-	struct node *left, *right;
+	struct node *left, *right, *next;
 } NodeType, *NodePtr;
+
+typedef struct{
+	NodePtr front;
+	NodePtr rear;
+}Queue;
+	
 
 extern Product pList[];
 
@@ -28,6 +34,14 @@ NodePtr searchNode(NodePtr head, char prodName[]);
 NodePtr deleteNode(NodePtr *head, char prodName[]);
 
 void BSF(NodePtr head);
+Queue createQueue();
+NodePtr peekFrontQueue(Queue q);
+NodePtr peekRearQueue(Queue q);
+bool enQueue(Queue *q, NodePtr node);
+bool deQueue(Queue *q);
+bool isEmpty(Queue q);
+
+
 void inOrderDFS(NodePtr head);
 void postOrderDFS(NodePtr head);
 void preOrderDFS(NodePtr head);
