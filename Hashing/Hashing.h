@@ -40,9 +40,12 @@ typedef struct{
     int count;
 } HashTable;
 
+
 SetNodePtr *newTable(int size);
 HashTable createHash(int size);
 void populateTable(HashTable *hash);
+
+SetNodePtr *resizeTable(HashTable *hash, int size);
 
 bool insertHash(SetNodePtr *table, char key[], char value[], int size);
 SetNodePtr searchHash(HashTable hash, char key[]);
@@ -52,6 +55,6 @@ bool threshCheck(HashTable hash);
 
 int hashFunction(char key[]);
 
-void visualizeValue(HashTable hash);
+void visualizeTable(HashTable hash);
 
 #endif
