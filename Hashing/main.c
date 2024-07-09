@@ -10,7 +10,7 @@ int main() {
 	HashTable myHash = createHash(SIZE);
 	
 	
-	insertHash(myHash.Set, "yellow", "FFFF00", myHash.size) ? searchHash(myHash, "yellow") : printf("\nError populating list");
+//	insertHash(myHash.Set, "yellow", "FFFF00", myHash.size) ? searchHash(myHash, "yellow") : printf("\nError populating list");
 //	insertHash(&myHash, "cyan", "00FFFF") ? searchHash(myHash, "cyan") : printf("\nError populating list");
 //	insertHash(&myHash, "neon rose", "FF0080") ? searchHash(myHash, "neon rose") : printf("\nError populating list");
 //	insertHash(&myHash, "red", "FF0000") ? searchHash(myHash, "red") : printf("\nError populating list");

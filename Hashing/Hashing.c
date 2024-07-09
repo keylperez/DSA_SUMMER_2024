@@ -52,12 +52,20 @@ HashTable createHash(int size){
 	return newHash;
 }
 
-void resizeTable(HashTable *hash, int size){
+SetNodePtr *resizeTable(HashTable *hash, int size){
 		
-		SetNodePtr *newTable = newTable(size);
+		SetNodePtr *newTable = malloc(sizeof(SetNodePtr) * size);
+	
+		int i;
+		if(newTable != NULL){
+			
+			for(i = 0; i < size; i++){
+				newTable[i] = NULL;
+			}
+		}
 		
 		SetNodePtr travPtr;
-//		SetNodePtr newNode;
+		SetNodePtr newNode;
 		int travIndex, rehashed;
 		
 		for(travIndex = 0, rehashed = 0; rehashed < hash->count; travIndex++){
@@ -67,8 +75,8 @@ void resizeTable(HashTable *hash, int size){
 			
 					while(travPtr != NULL) {
 						
-//						newNode = deleteHash(hash, travPtr->key);
-//						if(!insertHash(newTable, travPtr->key, travPtr->value, size)) printf("\nError insert");
+						newNode = deleteHash(hash, travPtr->key);
+						if(!insertHash(newTable, travPtr->key, travPtr->value, size)) printf("\nError insert");
 						travPtr = travPtr->next;
 						rehashed++;
 					}
@@ -77,8 +85,9 @@ void resizeTable(HashTable *hash, int size){
 		}
 		
 		free(hash->Set);
-		hash->Set = newTable;
 		hash->size = hash->size*2;
+		
+		return &(*newTable);
 
 }
 
@@ -87,14 +96,17 @@ void populateTable(HashTable *hash){
 		int x;
 		for(x = 0; x < ROW; x++){
 			
-//			if(!threshCheck(*hash)) resizeTable(hash, hash->size*2);
+			if(!threshCheck(*hash)) {
+				visualizeTable(*hash);
+				hash->Set = resizeTable(hash, hash->size*2);
+			}
 			
 			if(insertHash(hash->Set, colors[x][0], colors[x][1], hash->size)) {
 				
 				hash->count++;
 				hash->threshold = (float)hash->count/(float)hash->size;
 				SetNodePtr retNode = searchHash(*hash, colors[x][0]);
-				printf("\nKey: %s\nValue: %s\n", retNode->key, retNode->value);  
+//				printf("\nKey: %s\nValue: %s\n", retNode->key, retNode->value);  
 			} 
 			else {
 				printf("Error inserting Hash");
@@ -130,11 +142,16 @@ bool insertHash(SetNodePtr *table, char key[], char value[], int size){
 			trav->next = newNode;
 			newNode->prev = trav;
 			
+			printf("\nKey: %s\nValue: %s\nIndex: %d\n", trav->key, trav->value, keyIndex);  
 			
 		} 
 		else {
 			table[keyIndex] = newNode;
+			
+			printf("\nKey: %s\nValue: %s\nIndex: %d\n", table[keyIndex]->key, table[keyIndex]->value, keyIndex);  
 		}
+		
+		
 		
 		retVal = true;
 	} else {
