@@ -13,7 +13,7 @@ typedef struct vertex{
 	int count;
 	char *connections;
 	struct vertex *next;
-} Vertex, VertexPtr*;
+} Vertex, *VertexPtr;
 
 typedef struct{
 	VertexPtr *table;
@@ -25,14 +25,17 @@ typedef struct{
 void initMatrix(int matrix[VERTEX][VERTEX]);
 void initList(GraphList *hash);
 GraphList createList();
-VertexPtr *resizeTable(GraphList *hash);
 
 bool threshold(GraphList hash);
 int hashFunction(char key);
 
+VertexPtr *resizeTable(VertexPtr *table, int count, int size);
+
 void populateList(GraphList *list);
 bool addVertex(VertexPtr *table, char key, int size);
-bool addEdge(VertexPtr *vertex1, VertexPtr *vertex2);
+bool addEdge(Vertex *vertex1, Vertex *vertex2);
+Vertex *searchVertex(VertexPtr *table, char key, int size);
+Vertex *deleteVertex
 
 void populateMatrix(int matrix[VERTEX][VERTEX]);
 
