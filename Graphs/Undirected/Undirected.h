@@ -20,6 +20,7 @@ typedef struct{
 	float threshold;
 	int size;
 	int count;
+	char lastNode;
 } GraphList;
 
 void initMatrix(int matrix[VERTEX][VERTEX]);
@@ -32,10 +33,12 @@ int hashFunction(char key);
 VertexPtr *resizeTable(VertexPtr *table, int count, int size);
 
 void populateList(GraphList *list);
-bool addVertex(VertexPtr *table, char key, int size);
+//bool addVertex(VertexPtr *table, char key, int size);
+Vertex* addVertex(VertexPtr *table, char key, int size);
 bool addEdge(Vertex *vertex1, Vertex *vertex2);
 Vertex *searchVertex(VertexPtr *table, char key, int size);
-Vertex *deleteVertex
+Vertex *deleteVertex(GraphList *list, char key);
+void displayList(GraphList list);
 
 void populateMatrix(int matrix[VERTEX][VERTEX]);
 

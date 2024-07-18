@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include "Undirected.h"
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
@@ -15,35 +16,55 @@ int main(){
 	
 	printf("GRAPHS!!\n=======================================");
 	
-	int task = -1;
+	int task = -1, i;
 	while(task != 0){
-		printf("\nWhat task do you want to do(1-Matrix Implementation/2-Add Vertex/3-Search Vertex): ");
+		printf("\n\nWhat task do you want to do(1-Matrix Implementation/2-Add Vertex/3-Search Vertex/0-exit): ");
 		scanf("%d", &task);
+			
 		switch(task){
 			case 0:
-				int i;
+				
 				for(i = 0; i < graph.size; i++){
+					
 					if(graph.table[i] != NULL){
 						
+						while(graph.table[i]->next != NULL){
+							
+							Vertex *trav = graph.table[i];
+							free(trav->connections);
+							graph.table[i] = graph.table[i]->next;
+							free(trav);
+						}
 					}
 				}
+				free(graph.table);
 				break;
 			case 1:
+			
 				initMatrix(matrix);
 				displayMatrix(matrix);
 				populateMatrix(matrix);
 				displayMatrix(matrix);
 				break;
 			case 2:
+			
 				populateList(&graph);
 				break;
 			case 3:
+			
 				printf("\nWhich vertex are you looking for? ");
-				scanf(" %c", &vertex);
+				vertex = toupper(getch());
+				printf("%c", vertex);
 				Vertex *vsearch = searchVertex(graph.table, vertex, graph.size);
-				printf("\nKey: %c\nNumber of Edges: %d\nIndex in Hash: %d", vsearch->key, (vsearch->count, hashFunction(vsearch->key)%graph.size));
+				if(vsearch != NULL){
+					
+					printf("\nKey: %c\nEdges: %s\nNumber of Edges: %d\nIndex in Hash: %d", vsearch->key, vsearch->connections, vsearch->count, hashFunction(vsearch->key)%graph.size);
+				} else {
+					printf("\nSearched node does not exist");
+				}
 				break;
 			default:
+			
 				printf("\nERROR INPUT");
 				break;
 		}

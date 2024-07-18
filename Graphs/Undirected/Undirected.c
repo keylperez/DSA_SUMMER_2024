@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include "Undirected.h"
 
 void initMatrix(int matrix[VERTEX][VERTEX]){
@@ -18,6 +19,7 @@ void initList(GraphList *hash){
 	hash->threshold = 0;
 	hash->size = SIZE;
 	hash->count = 0;
+	hash->lastNode = 'A';
 	hash->table = (VertexPtr *)malloc(sizeof(VertexPtr) * hash->size);
 	int i;
 	for(i = 0; i < hash->size; i++){
@@ -30,6 +32,7 @@ GraphList createList(){
 	list.threshold = 0;
 	list.size = SIZE;
 	list.count = 0;
+	list.lastNode = 'A';
 	list.table = (VertexPtr *) malloc(sizeof(VertexPtr) * list.size);
 	int i;
 	for(i = 0; i < list.size; i++){
@@ -48,6 +51,7 @@ int hashFunction(char key){
 
 VertexPtr *resizeTable(VertexPtr *table, int count, int size){
 	
+	printf("\nTHRESHOLD EXCEEDED!! Reallocating table...");
 	VertexPtr *newTable = (VertexPtr *) malloc(sizeof(VertexPtr) * size);
 	
 	if(newTable != NULL){
@@ -68,7 +72,7 @@ VertexPtr *resizeTable(VertexPtr *table, int count, int size){
 //					int keyIndex = hashFunction(key)%newSize;
 //					VertexPtr node = (VertexPtr*) malloc(sizeof(Vertex));
 //					node = trav;
-					if(addVertex(newTable, trav->key, size)) {
+					if(addVertex(newTable, trav->key, size) != NULL) {
 					
 						VertexPtr vptr = searchVertex(newTable, trav->key, size);
 						int length = strlen(trav->connections);
@@ -92,109 +96,139 @@ VertexPtr *resizeTable(VertexPtr *table, int count, int size){
 	return newTable;
 }
 
-
 void populateList(GraphList *list){
 
 	int i, x, vertexes, edges;
-	char vertex = 'A';
-
+	char vertex = list->lastNode;
 	printf("\n\nHow many Vertexes will you add: ");
 	scanf("%d", &vertexes);
 
-	if(vertexes < 30){
+	// not overload the graph
+	if(vertexes < 20){
 		
+		// loop through number of vertex
 		for(i = 0; i < vertexes; i++, vertex++){
 			
 			if(!threshold(*list)){
 			
 				list->table = resizeTable(list->table, list->count, list->size*2);
 				list->size *= 2;
+				printf("\nNew size of table is now %d with %d vertexces", list->size, list->count);
 			}
 		
-			if(addVertex(list->table, vertex, list->size)){
-				list->count++;
-			} 
+//			if(addVertex(list->table, vertex, list->size)){
+				Vertex *added = addVertex(list->table, vertex, list->size);
+				if(added != NULL){
+					
+					printf("\nKey: %c - %s", added->key, added->connections);
+					list->count++;
+				} else {
+					printf("\nCould not add vertex in population function...");
+				}
+//			} 
 			
 			list->threshold = (float)list->count/list->size;
 		}
-		for(i = 0, edges = 0, vertex = 'A'; i < list->count; i++, vertex++){
+		for(i = 0, edges = 0; i < list->count; i++, list->lastNode++){
 			
-			Vertex *searchedNode = searchVertex(list->table, vertex, list->size);
+			Vertex *searchedNode = searchVertex(list->table, list->lastNode, list->size);
 			
-			printf("\nHow many edges will you input for %c: ", searchedNode->key);
-			scanf("%d", &edges);
-			
-			for(x = 0; x < edges; x++){
-			
-				printf("Edge 1: ");
-				searchedNode->connections[x] = getch();
+			if(searchedNode != NULL){
 				
-				printf("%c\n", searchedNode->connections[x]);
-				addEdge(searchedNode, searchVertex(list->table, searchedNode->connections[x], list->size));
+				printf("\nHow many edges will you input for %c: ", searchedNode->key);
+				scanf("%d", &edges);
+				
+				for(x = 0; x < edges; x++){
+				
+					printf("Edge %d: ", x);
+					char input = toupper(getch());
+					
+					printf("%c\n", input);
+					addEdge(searchedNode, searchVertex(list->table, input, list->size));
+				}
+				
+				printf("\nEdges: %s-%d", searchedNode->connections, searchedNode->count);
+				
+			} else {
+				printf("\nSearched Node is NULL(populate function)");
 			}
-			
-			printf("\nEdges: %s-%d", searchedNode->connections, searchedNode->count);
 		}
 	} else {
 		printf("\nToo much!!");
 	}
 }
 
-bool addVertex(VertexPtr *table, char key, int size){
+// bool addVertex(VertexPtr *table, char key, int size){
+Vertex* addVertex(VertexPtr *table, char key, int size){
 	
-	bool retVal = false;
+//	bool retVal = false;
 	int keyIndex = hashFunction(key)%size;
 	VertexPtr node = (VertexPtr) malloc(sizeof(Vertex));
+	Vertex* exist = searchVertex(table, key, size);
 	
-	if(node != NULL){
+	if(node != NULL && exist == NULL){
 		
 		node->key = key;
 		node->size = size;
 		node->count = 0;
 		node->next = NULL;
 		node->connections = (char *) malloc(sizeof(char) * size);
+		if(node->connections != NULL){
+			node->connections[0] = '\0';
 
-		if(table[keyIndex] == NULL){
-			table[keyIndex] = node;
-		} else {
-			
-			VertexPtr travV = table[keyIndex];
-			while(travV->next != NULL){
-				travV = travV->next;
+			if(table[keyIndex] == NULL){
+				table[keyIndex] = node;
+				exist = table[keyIndex];
+			} else {
+				
+				VertexPtr travV = table[keyIndex];
+				while(travV->next != NULL){
+					travV = travV->next;
+				}
+				travV->next = node;
+				exist = travV->next;
 			}
-			travV->next = node;
+//			retVal = true;
+		} else {
+			exist = NULL;
+			free(node->connections);
+			free(node);
 		}
-		retVal = true;
 	}
 	
-	return retVal;
+//	return retVal;
+	return exist;
 }
 
 bool addEdge(Vertex *vertex1, Vertex *vertex2){
 	
-//	vertex2->connections = (Vertex*) malloc(sizeof(Vertex) * (vertex2->size + 1));
-//	printf("\nVertex1&Vertex2: %c & %c", vertex1->key, vertex2->key);
 	bool retVal = false;
-	printf("\nVertex1 connections & count: %s - %d\n", vertex1->connections, vertex1->count);
 	int i;
 		
-	if(vertex1->size == vertex1->count){
+	if(vertex1->count == vertex1->size - 1){
 		
 		char *newConnections = (char*) malloc(sizeof(char) * (vertex1->size*2));
-		strcpy(newConnections, vertex1->connections);
-		free(vertex1->connections);
-		vertex1->connections = newConnections;
-	}
+		if(newConnections != NULL){
+			
+			strcpy(newConnections, vertex1->connections);
+			free(vertex1->connections);
+			vertex1->connections = newConnections;
+			vertex1->size *= 2;
+			printf("\nVertex %c edges full!! Reallocating to size %d...", vertex1->key, vertex1->size);
+			printf("\n%-20s%s", "Vertex Edges: ", vertex1->connections);
+		}
+	} 
 	
-	for(i = 0; i < vertex2->size && vertex2->connections[i] == vertex1->key; i++){}
-	
-	if(i >= vertex2->size){
+	if(vertex1->connections != NULL){
+				
+		for(i = 0; vertex1->connections[i] != vertex2->key && vertex1->connections[i] != '\0'; i++){}
 		
-		vertex1->connections[vertex1->count] = vertex2->key;
-		addEdge(vertex2, vertex1) ? printf("\nSuccess adding edge %c", vertex1->key) : printf("\nError adding edge %c", vertex1->key);
-//		printf("\nVertex count: %d\n", vertex1->count++);
-		vertex1->count++;
-		retVal = true;
+		if(vertex1->connections[i] != vertex2->key){
+			vertex1->connections[vertex1->count++] = vertex2->key;
+			vertex1->connections[vertex1->count] = '\0';
+			addEdge(vertex2, vertex1);
+			retVal = true;
+		} 
 	}
 	
 	return retVal;
@@ -204,24 +238,43 @@ Vertex *searchVertex(VertexPtr *table, char key, int size){
 	
 	int keyIndex = hashFunction(key)%size;
 	
-	Vertex *searchedVertex = NULL;
+	Vertex *searchedVertex = table[keyIndex];
 	
-	if(table[keyIndex]->key == key){
+	if(searchedVertex != NULL){
 		
-		searchedVertex = table[keyIndex];
-//		printf("\nSearched Vertex: %c", searchedVertex->key);
-	} else {
-		Vertex *trav = table[keyIndex]->next;
-		while(trav->key == key){
-			trav = trav->next;
+		if(searchedVertex->key == key){
+			
+			searchedVertex = table[keyIndex];
+	//		printf("\nSearched Vertex: %c", searchedVertex->key);
+		} else {
+			Vertex *trav = table[keyIndex]->next;
+			if(trav != NULL){
+				while(trav->key != key){
+					trav = trav->next;
+				}
+				if(trav != NULL){
+					searchedVertex = trav;
+				}
+			} else {
+				searchedVertex = NULL;
+			}
+			
 		}
-		if(trav != NULL){
-			searchedVertex = trav;
-		}
-		
 	}
 	
 	return searchedVertex;
+}
+
+void displayList(GraphList list){
+	
+	printf("\n\nTABLE DETAILS:");
+	printf("\n%-20s%10.2f", "Threshold:", list.threshold);
+	printf("\n%-20s%10d","Size:",  list.size);
+	printf("\n%-20s%10d", "No. of Vertexes:", list.count);
+	printf("\n%-20s%10c", "Next Vertex:", list.lastNode);
+	printf("\n===============================");
+	printf("\nVertexes and Edges:");
+	
 }
 
 void populateMatrix(int matrix[VERTEX][VERTEX]){
@@ -276,7 +329,14 @@ BCD4
 ACDE3
 ABD4
 ABCE2
-BD
+BD2
+5
+3
+BDE2
+AC4
+ABCD2
+AD3
+ABD
 **/
 
 
